@@ -40,7 +40,7 @@ export VLLM_USE_PRECOMPILED=True
 if [ "$cluster" -eq "vista" ] ; then
        	module load nvidia/24.9  cuda/12.8  openmpi/5.0.7
 elif [ "$cluster" -eq "stampede3" ] ; then
-	module load cuda/13.1 nvidia/26.1  openmpi/5.0.7
+	module load gcc/13.2.0 cuda/12.8 openmpi/5.0.7
 fi
 
 source .venv/bin/activate
@@ -107,7 +107,7 @@ if [[ ! -n "$MOE" ]] ; then
 fi
 
 echo ibrun ./vllm-start.bash $MODEL_NAME $N_GPUS $N_NODES  $head_node_ip  $MOE
-ibrun ./vllm-start.bash $MODEL_NAME $N_GPUS $N_NODES  $head_node_ip  $MOE
+#ibrun ./vllm-start.bash $MODEL_NAME $N_GPUS $N_NODES  $head_node_ip  $MOE
 
 #echo ./vllm-start.bash $MODEL_NAME $N_GPUS $N_NODES  $head_node_ip  $MOE
-#./vllm-start.bash $MODEL_NAME $N_GPUS $N_NODES  $head_node_ip  $MOE
+./vllm-start.bash $MODEL_NAME $N_GPUS $N_NODES  $head_node_ip  $MOE
