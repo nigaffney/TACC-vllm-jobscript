@@ -54,7 +54,7 @@ export MASTER_ADDR=${nodes[0]}
 
 export ib_dev=`ip -4 addr | grep ib | head -1 | awk -F : '{print $2}'`
 
-export head_node_ip=`ip -4 addr show dev $ib_dev | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n1`
+export head_node_ip=`ip -4 addr show dev $ib_dev | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -1`
 
 env
 
@@ -96,7 +96,7 @@ if [[ ! -n "$N_NODES" ]] ; then
        exit 1;       
 fi
 
-if [[ ! -n "$head_node_io" ]] ; then
+if [[ ! -n "$head_node_ip" ]] ; then
        echo "Cannot find head node IB IP"
        exit 1;       
 fi

@@ -25,9 +25,15 @@ HEADLESS=""
 if [ "$rank" -ne "0" ]; then
    HEADLESS="--headless"
 fi
-export NCCL_DEBUG=WARN
-echo vllm serve $1 --tensor-parallel-size $N_GPUS --pipeline-parallel-size $N_NODES --nnodes $N_NODES --node-rank $rank --master-addr $MASTER_IP  --trust-remote-code --distributed-executor-backend "mp" --moe-backend $MOE $OTHER_OPTIONS $HEADLESS
-NCCL_SOCKET_IFNAME=eno8303 NCCL_DEBUG=WARN vllm serve $1 --tensor-parallel-size $N_GPUS --pipeline-parallel-size $N_NODES --nnodes $N_NODES --node-rank $rank --master-addr $MASTER_IP  --trust-remote-code --distributed-executor-backend "mp" --moe-backend $MOE $OTHER_OPTIONS $HEADLESS
+export MY_NCCL_DEBUG=WARN
+export MY_NCCL_SOCKET_IFNAME=`ip addr | grep "state UP" | awk -F':' '$2 ~ /^.en*/ {print $2}' | head -1 | awk '{$1=$1};1' `
+
+if [[ ! -n "$MY_NCCL_SOCKET_IFNAME" ]] ; then
+	echo "Cannot find NCCL_SOCKET_IFNAME"
+	unset NCCL_SOCKET_IFNAME
+fi
+echo NCCL_DEBUT=$MY_NCCL_DEBUG NCCL_SOCKET_IFNAME=$MY_NCCL_SOCKET_IFNAME vllm serve $1 --tensor-parallel-size $N_GPUS --pipeline-parallel-size $N_NODES --nnodes $N_NODES --node-rank $rank --master-addr $MASTER_IP  --trust-remote-code --distributed-executor-backend "mp" --moe-backend $MOE $OTHER_OPTIONS $HEADLESS
+NCCL_DEBUT=$MY_NCCL_DEBUG NCCL_SOCKET_IFNAME=$MY_NCCL_SOCKET_IFNAME vllm serve $1 --tensor-parallel-size $N_GPUS --pipeline-parallel-size $N_NODES --nnodes $N_NODES --node-rank $rank --master-addr $MASTER_IP  --trust-remote-code --distributed-executor-backend "mp" --moe-backend $MOE $OTHER_OPTIONS $HEADLESS
 
 
 
